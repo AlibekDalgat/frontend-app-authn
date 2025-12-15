@@ -9,6 +9,8 @@ import {
   Icon,
   Tab,
   Tabs,
+  Image,
+  Hyperlink,
 } from '@openedx/paragon';
 import { ChevronLeft } from '@openedx/paragon/icons';
 import PropTypes from 'prop-types';
@@ -98,7 +100,16 @@ const Logistration = (props) => {
 
   return (
     <BaseContainer>
-      <div>
+        <div className="logo-top-right">
+        <Hyperlink destination={getConfig().MARKETING_SITE_BASE_URL}>
+          <Image
+            className="logo-large"
+            alt={getConfig().SITE_NAME}
+            src={getConfig().LOGO_URL || getConfig().LOGO_WHITE_URL}
+          />
+        </Hyperlink>
+      </div>
+      <div className="centered-forms">
         {disablePublicAccountCreation
           ? (
             <>
