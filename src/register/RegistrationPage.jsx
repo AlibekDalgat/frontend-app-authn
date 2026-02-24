@@ -183,40 +183,42 @@ const RegistrationPage = (props) => {
   }, [registrationResult]);
 
   useEffect(() => {
-    const checkDevice = () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const isReferralFlow = urlParams.get('ref') === 'true';
+  
       const fingerprint = getFingerprint();
-      if (!fingerprint) {
-        setFingerprintChecked(true);
-        return;
+
+      if (fingerprint) {
+          fetch(`${getConfig().LMS_BASE_URL}/api/rewards/v0/referral/save-fingerprint/`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              credentials: 'include',
+              body: JSON.stringify({ fingerprint }),
+          }).catch(e => console.error('Save fingerprint failed:', e));
       }
 
-      fetch(`${getConfig().LMS_BASE_URL}/api/rewards/v0/referral/check-device/`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({ fingerprint }),
-      })
-      .then(r => r.json())
-      .then(data => {
-        setDeviceAllowed(data.allowed);
-        if (data.message) setDeviceMessage(data.message);
-        if (data.allowed) {
-          return fetch(`${getConfig().LMS_BASE_URL}/api/rewards/v0/referral/save-fingerprint/`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            credentials: 'include',
-            body: JSON.stringify({ fingerprint }),
-          });
-        }
-      })
-      .catch(e => console.error('Fingerprint check error:', e))
-      .finally(() => setFingerprintChecked(true));
-    };
+      if (isReferralFlow && fingerprint) {
+          fetch(`${getConfig().LMS_BASE_URL}/api/rewards/v0/referral/check-device/`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              credentials: 'include',
+              body: JSON.stringify({ fingerprint }),
+          })
+              .then(r => r.json())
+              .then(data => {
+                  setDeviceAllowed(data.allowed);
+                  if (data.message) setDeviceMessage(data.message);
+              })
+              .catch(e => {
+                  console.error('Device check failed:', e);
+                  setDeviceAllowed(true);
+              });
+      } else {
+          setDeviceAllowed(true);
+      }
 
-    if (formStartTime && !autoSubmitRegForm && !fingerprintChecked) {
-      checkDevice();
-    }
-  }, [formStartTime, autoSubmitRegForm, fingerprintChecked]);
+      setFingerprintChecked(true);
+  }, [formStartTime]);
 
   const handleOnChange = (event) => {
     const { name } = event.target;
