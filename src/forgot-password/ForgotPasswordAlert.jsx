@@ -66,6 +66,10 @@ const ForgotPasswordAlert = (props) => {
       heading = formatMessage(messages['token.validation.internal.sever.error.heading']);
       message = formatMessage(messages['token.validation.internal.sever.error']);
       break;
+    case 'user_not_found':
+        heading = "Пользователь не найден";
+        message = props.errorMessage;
+        break;
     default:
       break;
   }

@@ -23,6 +23,13 @@ export function* handleForgotPassword(action) {
     if (e.response && e.response.status === 403) {
       yield put(forgotPasswordForbidden());
       logInfo(e);
+    } else if (e.response && e.response.status === 400) {
+      const errorData = e.customAttributes?.httpErrorResponseData
+        ? JSON.parse(e.customAttributes.httpErrorResponseData)
+        : (e.response?.data || {});
+      const userMessage = errorData.error || "Произошла ошибка. Попробуйте обновить страницу или проверьте подключение к Интернету.";
+      const isUserNotFound = errorData.error_code === 'user_not_found';
+      yield put(forgotPasswordServerError(userMessage, isUserNotFound));
     } else {
       yield put(forgotPasswordServerError());
       logError(e);

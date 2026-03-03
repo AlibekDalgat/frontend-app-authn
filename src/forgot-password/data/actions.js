@@ -22,8 +22,9 @@ export const forgotPasswordForbidden = () => ({
   type: FORGOT_PASSWORD.FORBIDDEN,
 });
 
-export const forgotPasswordServerError = () => ({
+export const forgotPasswordServerError = (errorMessage = null, isUserNotFound = false) => ({
   type: FORGOT_PASSWORD.FAILURE,
+  payload: { errorMessage, isUserNotFound },
 });
 
 export const setForgotPasswordFormData = (forgotPasswordFormData) => ({
