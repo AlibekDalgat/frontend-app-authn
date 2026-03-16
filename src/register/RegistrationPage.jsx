@@ -90,6 +90,8 @@ const RegistrationPage = (props) => {
   const queryParams = useMemo(() => getAllPossibleQueryParams(), []);
   const tpaHint = useMemo(() => getTpaHint(), []);
 
+  const urlEmail = queryParams.res_email || '';
+
   const [formFields, setFormFields] = useState({ ...backedUpFormData.formFields });
   const [configurableFormFields, setConfigurableFormFields] = useState({ ...backedUpFormData.configurableFormFields });
   const [errors, setErrors] = useState({ ...backedUpFormData.errors });
@@ -129,6 +131,12 @@ const RegistrationPage = (props) => {
     pipelineUserDetails,
     userPipelineDataLoaded,
   ]);
+
+  useEffect(() => {
+    if (urlEmail && !formFields.email) {
+      setFormFields(prev => ({ ...prev, email: urlEmail }));
+    }
+  }, [urlEmail, formFields.email]);
 
   useEffect(() => {
     if (!formStartTime) {

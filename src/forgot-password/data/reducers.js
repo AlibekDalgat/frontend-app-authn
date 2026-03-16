@@ -29,12 +29,12 @@ const reducer = (state = defaultState, action = null) => {
           status: 'forbidden',
         };
       case FORGOT_PASSWORD.FAILURE:
-return {
-    ...state,
-    status: action.payload?.isUserNotFound ? 'user_not_found' : INTERNAL_SERVER_ERROR,
-    errorMessage: action.payload?.errorMessage || null,
-    submitState: '',
-  };
+        return {
+          ...state,
+          status: action.payload?.isUserNotFound ? 'user_not_found' : INTERNAL_SERVER_ERROR,
+          errorMessage: action.payload?.errorMessage || null,
+          submitState: '',
+        };
       case PASSWORD_RESET_FAILURE:
         return {
           status: action.payload.errorCode,
