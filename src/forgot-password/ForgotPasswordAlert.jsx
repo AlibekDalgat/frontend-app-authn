@@ -1,8 +1,8 @@
 import React from 'react';
-
+import { useNavigate, useLocation } from 'react-router-dom';
 import { getConfig } from '@edx/frontend-platform';
 import { FormattedMessage, useIntl } from '@edx/frontend-platform/i18n';
-import { Alert } from '@openedx/paragon';
+import { Alert, Hyperlink } from '@openedx/paragon';
 import { CheckCircle, Error } from '@openedx/paragon/icons';
 import PropTypes from 'prop-types';
 
@@ -13,6 +13,8 @@ import {
 import { PASSWORD_RESET } from '../reset-password/data/constants';
 
 const ForgotPasswordAlert = (props) => {
+  const navigate = useNavigate();
+  const location = useLocation();                              // ← текущий URL + search
   const { formatMessage } = useIntl();
   const { email, emailError } = props;
   let message = '';
@@ -67,9 +69,32 @@ const ForgotPasswordAlert = (props) => {
       message = formatMessage(messages['token.validation.internal.sever.error']);
       break;
     case 'user_not_found':
-        heading = "Пользователь не найден";
-        message = props.errorMessage;
-        break;
+      heading = "Пользователь не найден";
+        message = (
+          <>
+            <p>{props.errorMessage}</p>
+            <p className="mt-3">
+              Хотите создать аккaунт с этой почтой?
+            </p>
+            <Hyperlink
+              variant="brand"
+              as="button"
+              className="btn btn-brand mt-2"
+              onClick={(e) => {
+                e.preventDefault();
+                const currentSearch = new URLSearchParams(location.search);
+                currentSearch.set('res_email', props.email || '');
+                navigate({
+                  pathname: '/register',
+                  search: currentSearch.toString(),
+                });
+              }}
+            >
+              Зарегистрироваться
+            </Hyperlink>
+          </>
+        );
+      break;
     default:
       break;
   }

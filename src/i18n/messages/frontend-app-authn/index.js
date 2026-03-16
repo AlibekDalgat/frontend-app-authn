@@ -4,8 +4,8 @@
 // the file and use the Micro-frontend i18n pattern in new repositories.
 //
 
-import messagesFromAuthn from './messages/frontend-app-authn';
+import messagesOfRuLanguage from './ru.json';
 
-export default [
-  messagesFromAuthn,
-];
+export default {
+  'ru': messagesOfRuLanguage,
+};
